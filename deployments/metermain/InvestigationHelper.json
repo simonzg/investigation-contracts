@@ -1,0 +1,9 @@
+[
+  {
+    "deployedAt": "19-May-2023 12:04:55",
+    "address": "0x516Ddb43Ea754dFfd782705F28Da84fB9D6e280A",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "InvestigationHelper"
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "address": "0x59D9902d6E68440791a6d5a679246A31Cfedb59E",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "InvestigationHelper"
+  },
+  {
+    "deployedAt": "19-May-2023 11:35:53",
+    "address": "0xE950F2d7f67484f4Dbe421419D4B1a7e5f055eEd",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "InvestigationHelper"
+  },
+  {
+    "deployedAt": "19-May-2023 11:38:01",
+    "address": "0xF74ABF1b0147558E1da8abbfC792983897b27F21",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "InvestigationHelper"
+  },
+  {
+    "deployedAt": "19-May-2023 11:39:05",
+    "address": "0xC99F5B5914681970cFA9a4743F12b9d96A600BCD",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "InvestigationHelper"
+  }
+]
