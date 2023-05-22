@@ -6,7 +6,7 @@ import { InvestigationHelper } from "../typechain/InvestigationHelper";
 /**
  * npx hardhat deployHelper  --gasprice 1000000000
  */
-task("deployHelper", "deploy InvestigationHelper contract")
+task("deployHelper", "deploy contract")
   .addOptionalParam("gasprice", "gas price", 0, types.int)
   .setAction(async ({ rpc, pk, gasprice }, { ethers, run, network }) => {
     const compoundLens = await run("d", {

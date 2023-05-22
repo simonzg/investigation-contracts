@@ -1,0 +1,23 @@
+[
+  {
+    "deployedAt": "19-May-2023 15:07:40",
+    "address": "0x55b95F59D815A0b3974Ccd04CF10FB7C9aC33982",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "BalanceCalc"
+  },
+  {
+    "deployedAt": "19-May-2023 15:21:29",
+    "address": "0xC02DeCd278F90eCf87BAD044e6d14A3046DE1e49",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "BalanceCalc"
+  },
+  {
+    "deployedAt": "19-May-2023 15:22:15",
+    "address": "0x1a8D0b8671d70403BA5193672bbBF2d41F40A041",
+    "constructorArguments": [],
+    "libraries": {},
+    "contract": "BalanceCalc"
+  }
+]
