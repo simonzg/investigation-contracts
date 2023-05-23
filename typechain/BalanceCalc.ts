@@ -29,47 +29,42 @@ import type {
 
 export interface BalanceCalcInterface extends utils.Interface {
   functions: {
-    "balanceOf()": FunctionFragment;
-    "divTotalShares(uint256)": FunctionFragment;
-    "init(uint256,uint256,uint256)": FunctionFragment;
-    "mulResult()": FunctionFragment;
-    "newBalanceOf()": FunctionFragment;
-    "shares()": FunctionFragment;
+    "balanceOf(uint256)": FunctionFragment;
+    "deposit(uint256)": FunctionFragment;
+    "init(uint256,uint256)": FunctionFragment;
+    "sharesOf(uint256)": FunctionFragment;
     "totalShares()": FunctionFragment;
     "totalSupply()": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "balanceOf"
-      | "divTotalShares"
+      | "deposit"
       | "init"
-      | "mulResult"
-      | "newBalanceOf"
-      | "shares"
+      | "sharesOf"
       | "totalShares"
       | "totalSupply"
+      | "withdraw"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "balanceOf", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "divTotalShares",
+    functionFragment: "balanceOf",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "deposit",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "init",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "mulResult", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "newBalanceOf",
-    values?: undefined
+    functionFragment: "sharesOf",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "shares", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalShares",
     values?: undefined
@@ -77,20 +72,16 @@ export interface BalanceCalcInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "divTotalShares",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mulResult", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "newBalanceOf",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "sharesOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalShares",
     data: BytesLike
@@ -99,13 +90,31 @@ export interface BalanceCalcInterface extends utils.Interface {
     functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
+    "DepositEvent(uint256,uint256,uint256,uint256)": EventFragment;
     "TokenEvent(address)": EventFragment;
+    "WithdrawEvent(uint256,uint256,uint256,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "DepositEvent"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawEvent"): EventFragment;
 }
+
+export interface DepositEventEventObject {
+  shares: BigNumber;
+  amount: BigNumber;
+  totalShares: BigNumber;
+  totalSupply: BigNumber;
+}
+export type DepositEventEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber],
+  DepositEventEventObject
+>;
+
+export type DepositEventEventFilter = TypedEventFilter<DepositEventEvent>;
 
 export interface TokenEventEventObject {
   sender: string;
@@ -113,6 +122,19 @@ export interface TokenEventEventObject {
 export type TokenEventEvent = TypedEvent<[string], TokenEventEventObject>;
 
 export type TokenEventEventFilter = TypedEventFilter<TokenEventEvent>;
+
+export interface WithdrawEventEventObject {
+  shares: BigNumber;
+  amount: BigNumber;
+  totalShares: BigNumber;
+  totalSupply: BigNumber;
+}
+export type WithdrawEventEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber],
+  WithdrawEventEventObject
+>;
+
+export type WithdrawEventEventFilter = TypedEventFilter<WithdrawEventEvent>;
 
 export interface BalanceCalc extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -141,135 +163,191 @@ export interface BalanceCalc extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    balanceOf(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    divTotalShares(
-      input: PromiseOrValue<BigNumberish>,
+    balanceOf(
+      shares: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    deposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     init(
-      _shares: PromiseOrValue<BigNumberish>,
       _totalShares: PromiseOrValue<BigNumberish>,
       _totalSupply: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    mulResult(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    newBalanceOf(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    shares(overrides?: CallOverrides): Promise<[BigNumber]>;
+    sharesOf(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     totalShares(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    withdraw(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
-  balanceOf(overrides?: CallOverrides): Promise<BigNumber>;
-
-  divTotalShares(
-    input: PromiseOrValue<BigNumberish>,
+  balanceOf(
+    shares: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  deposit(
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   init(
-    _shares: PromiseOrValue<BigNumberish>,
     _totalShares: PromiseOrValue<BigNumberish>,
     _totalSupply: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  mulResult(overrides?: CallOverrides): Promise<BigNumber>;
-
-  newBalanceOf(overrides?: CallOverrides): Promise<BigNumber>;
-
-  shares(overrides?: CallOverrides): Promise<BigNumber>;
+  sharesOf(
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-  callStatic: {
-    balanceOf(overrides?: CallOverrides): Promise<BigNumber>;
+  withdraw(
+    shares: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
-    divTotalShares(
-      input: PromiseOrValue<BigNumberish>,
+  callStatic: {
+    balanceOf(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    deposit(
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     init(
-      _shares: PromiseOrValue<BigNumberish>,
       _totalShares: PromiseOrValue<BigNumberish>,
       _totalSupply: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    mulResult(overrides?: CallOverrides): Promise<BigNumber>;
-
-    newBalanceOf(overrides?: CallOverrides): Promise<BigNumber>;
-
-    shares(overrides?: CallOverrides): Promise<BigNumber>;
+    sharesOf(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {
+    "DepositEvent(uint256,uint256,uint256,uint256)"(
+      shares?: null,
+      amount?: null,
+      totalShares?: null,
+      totalSupply?: null
+    ): DepositEventEventFilter;
+    DepositEvent(
+      shares?: null,
+      amount?: null,
+      totalShares?: null,
+      totalSupply?: null
+    ): DepositEventEventFilter;
+
     "TokenEvent(address)"(sender?: null): TokenEventEventFilter;
     TokenEvent(sender?: null): TokenEventEventFilter;
+
+    "WithdrawEvent(uint256,uint256,uint256,uint256)"(
+      shares?: null,
+      amount?: null,
+      totalShares?: null,
+      totalSupply?: null
+    ): WithdrawEventEventFilter;
+    WithdrawEvent(
+      shares?: null,
+      amount?: null,
+      totalShares?: null,
+      totalSupply?: null
+    ): WithdrawEventEventFilter;
   };
 
   estimateGas: {
-    balanceOf(overrides?: CallOverrides): Promise<BigNumber>;
-
-    divTotalShares(
-      input: PromiseOrValue<BigNumberish>,
+    balanceOf(
+      shares: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    deposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     init(
-      _shares: PromiseOrValue<BigNumberish>,
       _totalShares: PromiseOrValue<BigNumberish>,
       _totalSupply: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    mulResult(overrides?: CallOverrides): Promise<BigNumber>;
-
-    newBalanceOf(overrides?: CallOverrides): Promise<BigNumber>;
-
-    shares(overrides?: CallOverrides): Promise<BigNumber>;
+    sharesOf(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     totalShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    balanceOf(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    divTotalShares(
-      input: PromiseOrValue<BigNumberish>,
+    balanceOf(
+      shares: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    deposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     init(
-      _shares: PromiseOrValue<BigNumberish>,
       _totalShares: PromiseOrValue<BigNumberish>,
       _totalSupply: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    mulResult(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    newBalanceOf(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    shares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    sharesOf(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     totalShares(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    withdraw(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }
